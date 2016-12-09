@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>net.inelecom</groupId>
+	<artifactId>ikones</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<modules>
+		<module>ikones-common-web</module>
+		<module>ikones-web</module>
+		<module>ikones-service-dicom</module>
+	</modules>
+
+	<description>Master POM for Ikones project</description>
+	<url>http://www.inelecom.net</url>
+	<organization>
+		<name>INELECOM S DE RL DE CV</name>
+	</organization>
+	<inceptionYear>2016</inceptionYear>
+
+	<properties>
+		<!-- Explicitly declaring the source encoding eliminates the following 
+			message: -->
+		<!-- [WARNING] Using platform encoding (UTF-8 actually) to copy filtered 
+			resources, i.e. build is platform dependent! -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<!-- JBoss dependency versions -->
+
+		<version.wildfly.maven.plugin>1.0.2.Final</version.wildfly.maven.plugin>
+
+		<!-- Define the version of the JBoss BOMs we want to import to specify 
+			tested stacks. -->
+		<version.jboss.bom>8.2.1.Final</version.jboss.bom>
+		<version.wildfly>9.0.0.Alpha1</version.wildfly>
+
+
+		<!-- other plugin versions -->
+		<version.compiler.plugin>3.1</version.compiler.plugin>
+		<version.ear.plugin>2.10</version.ear.plugin>
+		<version.ejb.plugin>2.3</version.ejb.plugin>
+		<version.surefire.plugin>2.16</version.surefire.plugin>
+		<version.war.plugin>2.5</version.war.plugin>
+
+		<!-- maven-compiler-plugin -->
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+
+		<!-- Dependencies -->
+		<primefaces.version>6.0</primefaces.version>
+		<primefaces.extensions.version>6.0.0</primefaces.extensions.version>
+		<primefaces.themes.version>1.0.10</primefaces.themes.version>
+		<omnifaces.version>2.5.1</omnifaces.version>
+		<dcm4che.toolkit.version>2.0.29</dcm4che.toolkit.version>
+		<jasperreports.version>5.6.1</jasperreports.version>
+		<flyingsaucer.version>9.0.9</flyingsaucer.version>
+		<ikones.common.version>0.0.8</ikones.common.version>
+
+		<!-- Theme -->
+		<primefaces.master.theme.version>1.0.5</primefaces.master.theme.version>
+
+		<!-- Modules -->
+		<ikones.common.web.version>0.0.1-SNAPSHOT</ikones.common.web.version>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>prime-repo</id>
+			<name>PrimeFaces Maven Repository</name>
+			<url>http://repository.primefaces.org</url>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>www.dcm4che.org</id>
+			<name>dcm4che Repository</name>
+			<url>http://www.dcm4che.org/maven2</url>
+		</repository>
+	</repositories>
+
+	<dependencyManagement>
+		<dependencies>
+
+			<!-- Define the version of the EJB jar so that we don't need to repeat 
+				ourselves in every module -->
+			<!-- <dependency> <groupId>net.inelecom</groupId> <artifactId>ikones-ejb</artifactId> 
+				<version>${project.version}</version> <type>ejb</type> </dependency> -->
+
+			<!-- Additional Application Modules -->
+			<dependency>
+				<groupId>net.inelecom</groupId>
+				<artifactId>ikones-common-web</artifactId>
+				<version>${ikones.common.web.version}</version>
+				<type>jar</type>
+			</dependency>
+			
+			<dependency>
+				<groupId>net.inelecom</groupId>
+				<artifactId>ikones-service-dicom</artifactId>
+				<version>${project.version}</version>
+				<type>jar</type>
+			</dependency>
+
+			<!-- JBoss distributes a complete set of Java EE 7 APIs including a Bill 
+				of Materials (BOM). A BOM specifies the versions of a "stack" (or a collection) 
+				of artifacts. We use this here so that we always get the correct versions 
+				of artifacts. Here we use the jboss-javaee-7.0-with-tools stack (you can 
+				read this as the JBoss stack of the Java EE 7 APIs, with some extras tools 
+				for your project, such as Arquillian for testing) and the jboss-javaee-7.0-with-hibernate 
+				stack you can read this as the JBoss stack of the Java EE 7 APIs, with extras 
+				from the Hibernate family of projects) -->
+			<dependency>
+				<groupId>org.wildfly.bom</groupId>
+				<artifactId>jboss-javaee-7.0-with-tools</artifactId>
+				<version>${version.jboss.bom}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.wildfly.bom</groupId>
+				<artifactId>jboss-javaee-7.0-with-hibernate</artifactId>
+				<version>${version.jboss.bom}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<!-- Common library dependencies -->
+			<dependency>
+				<groupId>net.inelecom</groupId>
+				<artifactId>ikones-common</artifactId>
+				<version>${ikones.common.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.primefaces</groupId>
+				<artifactId>primefaces</artifactId>
+				<version>${primefaces.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.primefaces.extensions</groupId>
+				<artifactId>primefaces-extensions</artifactId>
+				<version>${primefaces.extensions.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.primefaces.themes</groupId>
+				<artifactId>all-themes</artifactId>
+				<version>${primefaces.themes.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.primefaces.themes</groupId>
+				<artifactId>primefaces-ultima</artifactId>
+				<version>${primefaces.master.theme.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.omnifaces</groupId>
+				<artifactId>omnifaces</artifactId>
+				<version>${omnifaces.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>net.sf.jasperreports</groupId>
+				<artifactId>jasperreports</artifactId>
+				<version>${jasperreports.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.lucene</groupId>
+						<artifactId>lucene-core</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.apache.lucene</groupId>
+						<artifactId>lucene-analyzers-common</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.apache.lucene</groupId>
+						<artifactId>lucene-queryparser</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
+			<dependency>
+				<groupId>org.xhtmlrenderer</groupId>
+				<artifactId>flying-saucer-core</artifactId>
+				<version>${flyingsaucer.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.xhtmlrenderer</groupId>
+				<artifactId>flying-saucer-pdf</artifactId>
+				<version>${flyingsaucer.version}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>bcmail-jdk14</artifactId>
+						<groupId>org.bouncycastle</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>bcprov-jdk14</artifactId>
+						<groupId>bouncycastle</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>bcprov-jdk14</artifactId>
+						<groupId>org.bouncycastle</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>bcmail-jdk14</artifactId>
+						<groupId>bouncycastle</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>bctsp-jdk14</artifactId>
+						<groupId>org.bouncycastle</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
+			<dependency>
+				<groupId>dcm4che.tool</groupId>
+				<artifactId>dcm4che-tool-dcmqr</artifactId>
+				<version>${dcm4che.toolkit.version}</version>
+			</dependency>
+
+		</dependencies>
+	</dependencyManagement>
+</project>

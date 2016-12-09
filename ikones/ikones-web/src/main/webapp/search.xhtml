@@ -1,0 +1,73 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/template/template.xhtml">
+
+	<ui:define name="content">
+		<div class="ui-g">
+			<div class="ui-g-12 ui-g-nopad">
+				<div class="card">
+					<h:form id="frmSearch" prependId="false">
+						<h1>Busqueda de estudios</h1>
+						<div class="ui-g">
+							<div class="ui-g-3">
+								<h:panelGroup styleClass="md-inputfield">
+									<p:inputText id="patId" value="#{dicomQueryView.patientId}" />
+									<p:outputLabel for="patId" value="ID del paciente" />
+								</h:panelGroup>
+							</div>
+							<div class="ui-g-3">
+								<h:panelGroup styleClass="md-inputfield">
+									<p:inputText id="patName" value="#{dicomQueryView.patientName}" />
+									<p:outputLabel for="patName" value="Nombre" />
+								</h:panelGroup>
+							</div>
+							<div class="ui-g-3">
+								<h:panelGroup styleClass="md-inputfield">
+									<p:calendar id="studyStart" value="#{dicomQueryView.startDate}" />
+									<p:outputLabel for="studyStart" value="Fecha de inicio" />
+								</h:panelGroup>
+							</div>
+							<div class="ui-g-3">
+								<h:panelGroup styleClass="md-inputfield">
+									<p:calendar id="studyEnd" value="#{dicomQueryView.endDate}" />
+									<p:outputLabel for="studyEnd" value="Fecha final" />
+								</h:panelGroup>
+							</div>
+						</div>
+						<p:commandButton id="btnSearch" value="Buscar"
+							action="#{dicomQueryView.search()}" update="tblStudies">
+						</p:commandButton>
+					</h:form>
+				</div>
+				
+				<!-- <div class="card">
+					
+				</div> -->
+				<p:panel header="Resultados">
+					<p:dataTable id="tblStudies" value="#{dicomQueryView.model}" var="_studies" 
+						emptyMessage="No hay estudios">
+						<!-- <f:facet name="header">Listado de estudios</f:facet> -->
+						<p:column headerText="Nombre">
+							<h:outputText value="#{_studies.patient}" />
+						</p:column>
+						<p:column headerText="Estudio">
+							<h:outputText value="#{_studies.studyDescription}" />
+						</p:column>
+						<p:column headerText="Fecha">
+							<h:outputText value="#{_studies.studyDate}">
+								<f:convertDateTime dateStyle="short"/>
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Modalidad">
+							<h:outputText value="#{_studies.modality}" />
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			</div>
+		</div>
+
+	</ui:define>
+
+</ui:composition>
