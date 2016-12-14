@@ -4,7 +4,6 @@
 package net.inelecom.service.dicom.services;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +16,6 @@ import org.dcm4che2.net.ConfigurationException;
 import org.dcm4che2.tool.dcmqr.DcmQR;
 
 import net.inelecom.ikones.common.CompareUtil;
-import net.inelecom.service.dicom.model.DicomViewModel;
 
 
 /**
@@ -39,9 +37,8 @@ public class DicomQuery2Impl implements DicomQuery {
 	}
 	
 	@Override
-	public List<DicomViewModel> query(Map<String, String> matchingKeys, List<String> returnKeys, boolean fuzzy,
+	public List<DicomObject> query(Map<String, String> matchingKeys, List<String> returnKeys, boolean fuzzy,
 			String aet, String host, int port, QueryLevel level) {
-		List<DicomViewModel> resultSet = null;
 		
 		if(CompareUtil.isEmpty(matchingKeys) 
     			|| CompareUtil.isEmpty(returnKeys) 
@@ -94,44 +91,12 @@ public class DicomQuery2Impl implements DicomQuery {
 			dcmqr.stop();
 		}
 		
-		if(!CompareUtil.isEmpty(result)) {
-			resultSet = mapDicomObjectToViewModel(result);
-		}
-				
-		return resultSet;
+		return result;
 	}
 	
 	@Override
 	public String contructViewerLink(String studyUID) {
 		return null;
-	}
-	
-	private List<DicomViewModel> mapDicomObjectToViewModel(final List<DicomObject> studies) {
-		final List<DicomViewModel> result = new ArrayList<DicomViewModel>();
-		
-		for (DicomObject dicom : studies) {
-			DicomViewModel data = new DicomViewModel();
-			data.setPatient(dicom.getString(Tag.PatientName).replace("^", " "));
-			data.setStudyDescription(dicom.getString(Tag.StudyDescription));
-			data.setStudyIUID(dicom.getString(Tag.StudyInstanceUID));
-			data.setStudyDate(dicom.getDate(Tag.StudyDate));
-			data.setBirthdate(dicom.getDate(Tag.PatientBirthDate));
-			String[] modalities = dicom.getStrings(Tag.ModalitiesInStudy);
-			if(modalities.length > 1) {
-				StringBuilder builder = new StringBuilder();
-				for(String mod : modalities) {
-					builder.append(mod);
-					builder.append("/");
-				}
-				data.setModality(builder.toString().substring(0, builder.toString().length() - 1));
-			} else {
-				data.setModality(dicom.getString(Tag.ModalitiesInStudy));
-			}
-			
-			result.add(data);
-		}
-		
-		return result;
 	}
 
 }

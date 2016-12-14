@@ -7,6 +7,8 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.dcm4che2.data.DicomObject;
+import org.dcm4che2.data.Tag;
 import org.dcm4che2.util.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,16 +101,18 @@ public class DicomQueryView implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void search() {
+	public void searchStudies() {
 		LOG.info("Starting dicom search");
-		model = queryService.query(
-				createRequestKeys(), 
-				createReturnKeys(), 
-				true, 
-				settings.getAeTitle(), 
-				settings.getPacsAddress(), 
-				settings.getPacsPort(),
-				QueryLevel.STUDY);
+		List<DicomObject> dicom = queryService.query(createRequestKeys(), 
+													createReturnKeys(), 
+													true, 
+													settings.getAeTitle(), 
+													settings.getPacsAddress(), 
+													settings.getPacsPort(),
+													QueryLevel.STUDY);
+		
+		model = mapDicomObjectToViewModel(dicom);
+		
 	}
 	
 	private List<String> createReturnKeys() {
@@ -139,6 +143,36 @@ public class DicomQueryView implements Serializable {
 				DateUtils.formatDA(endDate));
 		
 		return request;
+	}
+	
+	private List<DicomViewModel> mapDicomObjectToViewModel(final List<DicomObject> studies) {
+		final List<DicomViewModel> result = new ArrayList<DicomViewModel>();
+
+		if(!CompareUtil.isEmpty(studies)) {
+			for (DicomObject dicom : studies) {
+				DicomViewModel data = new DicomViewModel();
+				data.setPatient(dicom.getString(Tag.PatientName).replace("^", " "));
+				data.setStudyDescription(dicom.getString(Tag.StudyDescription));
+				data.setStudyIUID(dicom.getString(Tag.StudyInstanceUID));
+				data.setStudyDate(dicom.getDate(Tag.StudyDate));
+				data.setBirthdate(dicom.getDate(Tag.PatientBirthDate));
+				String[] modalities = dicom.getStrings(Tag.ModalitiesInStudy);
+				if(modalities.length > 1) {
+					StringBuilder builder = new StringBuilder();
+					for(String mod : modalities) {
+						builder.append(mod);
+						builder.append("/");
+					}
+					data.setModality(builder.toString().substring(0, builder.toString().length() - 1));
+				} else {
+					data.setModality(dicom.getString(Tag.ModalitiesInStudy));
+				}
+				
+				result.add(data);
+			}
+		}
+		
+		return result;
 	}
 
 }
